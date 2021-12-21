@@ -1,4 +1,23 @@
+<?php
+$servername = "localhost";
+$dbname = "php_shop";
+$username = "root";
+$password = "";
 
+try {
+  $connection = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+  // set the PDO error mode to exception
+  $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+  $mysqlRequest = "SELECT * FROM orders";
+  $statement = $connection->prepare($mysqlRequest);
+  $statement->execute();
+  $orders = $statement->fetchAll(PDO::FETCH_ASSOC);
+} catch(PDOException $e) {
+  echo "Connection failed: " . $e->getMessage();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,11 +44,13 @@
         <th>Order</th>
       </thead>
       <tbody>
+        <!-- 沒有order 給空陣列 -->
+        <?php foreach($orders ?? [] as $order):?>
         <tr>
-          <td>1</td>
-          <td>cart</td>
+          <td><?php echo $order['id'];?></td>
+          <td><?php echo $order['cart'];?></td>
         </tr>
-
+        <?php endforeach;?>
       </tbody>
     </table>
   </div>
